@@ -22,14 +22,14 @@ Physics: none for v1 (flip/toss are tweened; add a tiny spring if it feels dead)
 
 ## Milestone 1 (current): playable v1 shift
 Acceptance:
-- [ ] `npm run build` zero TS errors; `npm run test` green
-- [ ] Full shift completable desktop 1440x900 and mobile 390x844 touch (Playwright)
-- [ ] All 5 minigames mouse+touch, no hover-only
-- [ ] No horizontal scroll, HUD readable at 390px, tap targets >= 44px
-- [ ] >= 55fps desktop, >= 30fps mobile emulation during busy shift (logged)
-- [ ] Save/reload restores progress
-- [ ] Helpers, market, equipment upgrade, critic implemented
-- [ ] Deployed to Vercel from GitHub main; CREDITS.md complete
+- [x] `npm run build` zero TS errors; `npm run test` green
+- [x] Full shift completable desktop 1440x900 and mobile 390x844 touch (Playwright)
+- [x] All 5 minigames mouse+touch, no hover-only
+- [x] No horizontal scroll, HUD readable at 390px, tap targets >= 44px
+- [x] >= 55fps desktop, >= 30fps mobile emulation during busy shift (logged)
+- [x] Save/reload restores progress
+- [x] Helpers, market, equipment upgrade, critic implemented
+- [x] Deployed to Vercel from GitHub main; CREDITS.md complete
 
 ## Later
 - Restaurants 2-4, rival cook-off (only after all v1 checks pass)

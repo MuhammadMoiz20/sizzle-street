@@ -25,3 +25,9 @@ Next: real Chrome mobile-emulation fps check via CPU throttling; critic-star e2e
 ✅ README.md added. Gate: build 0 errors, 16 unit, 36 e2e across desktop/mobile/mobile-landscape, served 9/9 each
 ❌ Real-device phone fps still unmeasured (needs a physical phone); fries visual still weakest
 Next: final acceptance sweep against checklist, CREDITS review, deploy verify, status report.
+## Iteration 4 (final sweep) — 2026-09-24
+✅ Genuine touch events (CDP Input.dispatchTouchEvent, pointerType 'touch') complete the chop minigame on mobile + landscape (e2e/touch.spec.ts)
+✅ Production https://sizzle-street.vercel.app serves the latest bundle hash from main
+✅ Acceptance checklist: all items pass on 1440x900 and 390x844 (plus 844x390). 38 e2e, 16 unit, 0 TS errors
+Known: fps numbers are from headless Chromium on a laptop GPU (60/60, 4x CPU-throttled 60/59.8), not a physical phone.
+Loop ended: goal met after 4 iterations.
