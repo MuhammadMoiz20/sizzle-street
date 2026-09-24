@@ -1,5 +1,5 @@
 import type {
-  Customer, Helper, MinigameKind, Order, SaveData, ShiftPhase, ShiftSummary, StepResult,
+  Customer, MinigameKind, Order, SaveData, ShiftPhase, ShiftSummary, StepResult,
 } from '../game/types';
 import type { Emitter } from '../game/events';
 
