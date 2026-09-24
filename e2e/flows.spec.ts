@@ -55,7 +55,7 @@ test('equipment: sharpen knife via chop minigame', async ({ page }) => {
   await seed(page);
   await page.getByRole('button', { name: 'Market' }).click();
   await page.getByRole('button', { name: /Upgrade Knife/ }).click();
-  await expect(page.getByText(/Swipe across the guide line/)).toBeVisible();
+  await expect(page.getByText(/Swipe across the (guide|red) line/)).toBeVisible();
   await page.waitForTimeout(300);
   // Guide slides along world x at y=0.2; stroke horizontally through its projected screen y.
   const box = (await page.locator('canvas').first().boundingBox())!;

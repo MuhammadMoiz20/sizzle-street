@@ -5,9 +5,12 @@ import type { StepResult } from '../game/types';
 /** Shared overlay widgets. Big text, real buttons, bottom-anchored in portrait. */
 export function panel(ctx: MinigameContext, text: string): { root: HTMLElement; text: HTMLElement; bar: HTMLElement } {
   const root = document.createElement('div');
-  root.style.cssText = `position:absolute;left:0;right:0;${(ctx.overlay.clientHeight || ctx.viewport.height) > (ctx.overlay.clientWidth || ctx.viewport.width) ? 'bottom:0' : 'top:0'};` +
+  const w = ctx.overlay.clientWidth || ctx.viewport.width, hh = ctx.overlay.clientHeight || ctx.viewport.height;
+  // portrait: bottom strip; short landscape (phone): right column clear of the food; desktop: top strip.
+  const place = hh > w ? 'left:0;right:0;bottom:0' : hh <= 500 ? 'top:48px;bottom:0;right:0;width:min(38vw,300px);justify-content:center' : 'left:0;right:0;top:0';
+  root.style.cssText = `position:absolute;${place};` +
     'display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;pointer-events:none;' +
-    'font:700 clamp(20px,4vw,32px)/1.2 system-ui,sans-serif;color:#fff;text-shadow:0 2px 6px #000;text-align:center';
+    `font:700 ${hh <= 500 && hh <= w ? '20px' : 'clamp(20px,4vw,32px)'}/1.2 system-ui,sans-serif;color:#fff;text-shadow:0 2px 6px #000;text-align:center`;
   const t = document.createElement('div');
   t.textContent = text;
   const bar = document.createElement('div');
@@ -31,7 +34,7 @@ export function button(parent: HTMLElement, label: string, onPress: () => void):
 /** Horizontal fill meter with optional target marker. `set(0..1)` moves the fill. */
 export function meter(parent: HTMLElement, zones: string, target?: number): { set(v: number): void } {
   const wrap = document.createElement('div');
-  wrap.style.cssText = `position:relative;width:min(80vw,420px);height:22px;border-radius:11px;background:${zones};` +
+  wrap.style.cssText = `position:relative;width:min(80vw,420px,100%);height:22px;border-radius:11px;background:${zones};` +
     'box-shadow:0 0 0 2px #fff inset';
   const needle = document.createElement('div');
   needle.style.cssText = 'position:absolute;top:-6px;width:6px;height:34px;margin-left:-3px;background:#fff;border-radius:3px;' +

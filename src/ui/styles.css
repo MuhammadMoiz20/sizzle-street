@@ -173,3 +173,20 @@ h3 { margin-top: 8px; color: var(--red); text-transform: uppercase; letter-spaci
 @media (prefers-reduced-motion: reduce) {
   .chip, .patience-fill, .avatar, #clock { animation: none !important; }
 }
+
+/* ---------- landscape phone (short viewport): rail as narrow left column, compact bars ---------- */
+@media (max-height: 500px) and (orientation: landscape) {
+  #kitchen-hud { grid-template-columns: 250px 1fr; grid-template-rows: auto 1fr auto; grid-template-areas: "top top" "tickets stage" "tickets seats"; }
+  #topbar { padding: 4px 12px; }
+  #clock { font-size: 1.1rem; }
+  #money { font-size: 0.95rem; }
+  #tickets { flex-direction: column; overflow-x: hidden; overflow-y: auto; scroll-snap-type: none; padding: 8px; gap: 8px; }
+  .ticket { flex: 0 0 auto; max-width: none; padding: 8px; gap: 4px; }
+  .ticket-recipe { font-size: 0.8rem; }
+  #seats { padding: 2px 8px 4px; gap: 12px; justify-content: center; }
+  .avatar { width: 28px; height: 28px; font-size: 0.7rem; }
+  .seat-name { display: none; }
+  #mg-chrome { padding: 2px 8px; }
+  #mg-title { font-size: 0.85rem; }
+  #toasts { top: calc(var(--sat) + 44px); }
+}

@@ -92,6 +92,7 @@ function equipmentMinigame(kind: MinigameKind): Promise<number> {
     const tickCook = (dt: number) => { if (step.cook) step.cook.elapsed += dt; t += dt; };
     (active as any).tickCook = tickCook;
     const finish = (score: number) => { closeMinigame(); resolve(score); };
+    (active as any).exitEquip = () => finish(0);
     mg.start({
       step, kind, group: renderer.stage, camera: renderer.camera, gestures, food: renderer.food,
       equipmentLevel: kitchen.save.equipmentLevel[kind], viewport: viewport(), overlay: ui.overlay,
@@ -113,6 +114,19 @@ const ui = createUI(root, kitchen, {
   onStartShift: () => { audio.unlock(); kitchen.startShift(); ui.showKitchen(); renderer.showKitchen(); },
   onEquipmentMinigame: equipmentMinigame,
   onToggleMute: () => { audio.setMuted(!audio.muted); return audio.muted; },
+  onExitMinigame: () => {
+    if (!active) return;
+    if (active.stepIndex < 0) { active.mg.dispose(); (active as any).exitEquip?.(); return; }
+    const order = kitchen.orders.find((o) => o.id === active!.orderId);
+    const step = order?.steps[active.stepIndex];
+    // Timed steps keep cooking in the sim; hands-on steps go back to pending.
+    if (order && step && step.kind !== 'grill' && step.kind !== 'fry') {
+      step.status = 'pending';
+      kitchen.events.emit('order:step', { order, stepIndex: active.stepIndex, status: 'pending' });
+    }
+    closeMinigame();
+    ui.showKitchen();
+  },
 });
 
 // route events -> audio

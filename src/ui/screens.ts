@@ -1,5 +1,5 @@
 import type { MinigameKind, ShiftSummary } from '../game/types';
-import { EQUIPMENT_UPGRADE_COST, HIREABLE_HELPERS, RECIPES, RESTAURANT, SPICES, recipeById } from '../game/data';
+import { CRITIC, EQUIPMENT_UPGRADE_COST, HIREABLE_HELPERS, RECIPES, RESTAURANT, SPICES, recipeById } from '../game/data';
 import type { Kitchen } from '../sim/api';
 import { h, money } from './dom';
 import type { UIHooks } from './index';
@@ -67,7 +67,7 @@ export function summaryScreen(d: ScreenDeps, s: ShiftSummary): HTMLElement {
       row('Net', money(s.earnings + s.tips - s.wages)),
       row('Served / lost', `${s.served} / ${s.lost}`),
       s.bestDish ? row('Best dish', `${recipeById(s.bestDish.recipeId).name} (${Math.round(s.bestDish.score * 100)}%)`) : null,
-      row('Critic stars', s.criticStars ? '★'.repeat(s.criticStars) : 'none'),
+      row(`Critic stars (${CRITIC.name})`, s.criticStars ? '★'.repeat(s.criticStars) : 'none'),
       btn('Continue', () => d.go('title'), 'btn primary big')));
 }
 

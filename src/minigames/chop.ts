@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { Minigame, MinigameContext, MinigameFactory } from './types';
 import type { FoodItem } from '../render/api';
 import { panel, toScreen, sfx, nonTimed, clamp01 } from './ui';
+import { flash, clearHeader } from './feedback';
 
 const N = 8;
 const GUIDE_HALF = 0.35; // world half-width the guide slides across
@@ -38,12 +39,14 @@ export const chop: MinigameFactory = (): Minigame => {
       item = ctx.food.make(ctx.step.ingredient);
       item.object.position.y += 0.05;
       guide = new THREE.Mesh(
-        new THREE.BoxGeometry(0.02, 0.01, 0.9),
-        new THREE.MeshBasicMaterial({ color: 0xff3b30 }),
+        new THREE.BoxGeometry(0.05, 0.02, 1.1),
+        new THREE.MeshBasicMaterial({ color: 0xff3b30, depthTest: false }),
       );
+      guide.renderOrder = 10; // always drawn over the food so the target never hides
       guide.position.y = 0.2;
       ctx.group.add(station, item.object, guide);
-      ui = panel(ctx, `Swipe across the guide line  0 / ${N}`);
+      ui = panel(ctx, `Swipe across the red line  0 / ${N}`);
+      clearHeader(ui.root);
       ctx.gestures.setHandlers({
         onSwipe: (_dir, _speed, from, to) => {
           if (!item || cuts >= N) return;
@@ -60,7 +63,8 @@ export const chop: MinigameFactory = (): Minigame => {
           accSum += posAcc * 0.7 + rhythm * 0.3;
           item.setChopProgress(cuts / N);
           sfx(ctx, 'chop');
-          if (ui) ui.text.textContent = `Swipe across the guide line  ${cuts} / ${N}`;
+          flash(ctx, posAcc > 0.7 ? 'PERFECT' : posAcc > 0.3 ? 'GOOD' : 'MISS', posAcc > 0.7 ? '#2ecc71' : posAcc > 0.3 ? '#ffb347' : '#ff3b30');
+          if (ui) ui.text.textContent = `Swipe across the red line  ${cuts} / ${N}`;
           if (cuts >= N) ctx.complete(nonTimed(accSum / N));
         },
       });

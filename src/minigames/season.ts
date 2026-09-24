@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { Minigame, MinigameContext, MinigameFactory } from './types';
 import type { FoodItem } from '../render/api';
 import { panel, button, meter, toScreen, sfx, clamp01 } from './ui';
+import { flash, clearHeader } from './feedback';
 
 const OVER_ITEM_PX = 140;
 const SHAKE_V = 250; // px/s: velocity magnitude that counts as a shake
@@ -37,7 +38,11 @@ export const season: MinigameFactory = (): Minigame => {
     amount = a;
     item?.setSeasoning(a / target);
     fill?.set(a / (target * 2));
-    if (ui) ui.text.textContent = `Shake over the dish  ${a} / ${target}`;
+    if (!ui) return;
+    ui.text.textContent = a === 0 ? `Shake over the dish to the green mark  0 / ${target}`
+      : a === target ? `ON THE MARK  ${a} / ${target} - tap DONE` : a > target ? `TOO MUCH  ${a} / ${target}` : `Shake over the dish  ${a} / ${target}`;
+    ui.text.style.color = a === target ? '#2ecc71' : a > target ? '#ff3b30' : '#fff';
+    if (a > 0) flash(ctx, a === target ? 'PERFECT' : a > target ? 'TOO MUCH' : `${a}`, a === target ? '#2ecc71' : a > target ? '#ff3b30' : '#ffb347');
   };
 
   return {
@@ -50,6 +55,7 @@ export const season: MinigameFactory = (): Minigame => {
       ui = panel(ctx, '');
       fill = meter(ui.root, 'linear-gradient(90deg,#555,#ffb347)', 0.5);
       ui.root.insertBefore(ui.root.lastChild!, ui.bar);
+      clearHeader(ui.root);
       button(ui.bar, 'DONE', () => {
         ctx.complete({
           accuracy: clamp01(1 - Math.abs(amount - target) / target),

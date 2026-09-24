@@ -16,3 +16,12 @@ Next: push → Vercel deploy check; e2e for market/staff/upgrade; visual pass on
 ✅ Gate: build 0 errors, 14 unit tests, 14 e2e; desktop avg 60.0 min 59.8 fps; mobile avg 60.0 min 59.8 (headless laptop GPU)
 ❌ Remaining: no real-device phone fps number; fries visual change marginal; no e2e for critic scoring path (signature dish → critic star)
 Next: real Chrome mobile-emulation fps check via CPU throttling; critic-star e2e; playtest UX at 390px landscape; CREDITS/README final.
+## Iteration 3 — 2026-09-24
+✅ Phone landscape 844x390: ticket rail as left column, minigame controls right column; food never covered (e2e/landscape.spec.ts)
+✅ Throttled 4x CPU fps (mobile + landscape): avg 60.0 min 59.8 — GPU-bound scene, still headless laptop GPU, not a phone
+✅ Critic path e2e: perfect signature dish via real grill gestures → critic star saved + shown in summary; 2 new unit tests (16 total)
+✅ UX playtest fixes: tickets sorted by urgency, HURRY + pulsing card, TAP TO START chip, live PERFECT/OVER/BURNT meter labels, per-swipe PERFECT/GOOD/MISS flash, thicker chop guide drawn over food, prompts no longer hidden under header
+✅ Back button wired for all minigames (hands-on steps return to pending, timed steps keep cooking); duplicate BACK removed
+✅ README.md added. Gate: build 0 errors, 16 unit, 36 e2e across desktop/mobile/mobile-landscape, served 9/9 each
+❌ Real-device phone fps still unmeasured (needs a physical phone); fries visual still weakest
+Next: final acceptance sweep against checklist, CREDITS review, deploy verify, status report.

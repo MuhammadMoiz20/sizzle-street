@@ -1,6 +1,7 @@
 import type { Minigame, MinigameContext, MinigameFactory } from './types';
 import type { FoodItem } from '../render/api';
 import { panel, sfx, nonTimed, clamp01 } from './ui';
+import { flash, clearHeader } from './feedback';
 
 const N = 6;
 
@@ -20,6 +21,7 @@ export const stir: MinigameFactory = (): Minigame => {
       item = ctx.food.make(ctx.step.ingredient);
       ctx.group.add(ctx.food.station(ctx.step.ingredient === 'pan_sauce' ? 'pan' : 'bowl'), item.object);
       ui = panel(ctx, `Circle to stir  0 / ${N}`);
+      clearHeader(ui.root);
       ctx.gestures.setHandlers({
         onDrag: (_p, vx, vy) => { speed = Math.min(1, Math.hypot(vx, vy) / 1500); },
         onCircle: (clockwise) => {
@@ -30,6 +32,7 @@ export const stir: MinigameFactory = (): Minigame => {
           if (clockwise) cw++; else ccw++;
           count++;
           sfx(ctx, 'stir');
+          flash(ctx, `${count}`, '#ffb347');
           if (ui) ui.text.textContent = `Circle to stir  ${count} / ${N}`;
           if (count < N) return;
           const mean = intervals.reduce((a, b) => a + b, 0) / intervals.length;

@@ -8,7 +8,6 @@ export function cookMeter(ctx: MinigameContext, hint: string) {
   const m = meter(ui.root, DONENESS_ZONES);
   ui.root.insertBefore(ui.root.lastChild!, ui.bar); // meter above buttons
   button(ui.bar, 'PULL', () => ctx.cookActions?.pull());
-  button(ui.bar, 'BACK', () => ctx.exit());
   return {
     ui,
     /** doneness 0..2 -> meter 0..1 */

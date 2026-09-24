@@ -145,3 +145,35 @@ describe('kitchen sim', () => {
     expect(k2.save.equipmentLevel.grill).toBe(2);
   });
 });
+
+describe('critic scoring', () => {
+  /** Seed a kitchen with the signature dish, spawn the critic, finish every step with the given accuracy, serve. */
+  function serveCritic(accuracy: number): Kitchen {
+    const k = createKitchen({ seed: 11, storage: null });
+    k.save.unlockedRecipes.push('seared_chicken');
+    k.save.shiftNumber = 3;
+    k.startShift();
+    k.debugSpawnCritic();
+    const critic = k.customers.find((c) => c.isCritic)!;
+    expect(critic.name).toBe('Marguerite Pell');
+    const o = k.orders.find((x) => x.id === critic.orderId)!;
+    expect(o.recipeId).toBe('seared_chicken');
+    o.steps.forEach((_, i) => k.finishStep(o.id, i, { accuracy, timing: 1 }));
+    k.serve(o.id);
+    return k;
+  }
+
+  it('signature dish scored >= 0.9 earns a critic star at shift end', () => {
+    const k = serveCritic(1);
+    k.tick(1000); // closes the shift
+    expect(k.phase).toBe('ended');
+    expect(k.save.criticStars).toBe(1);
+  });
+
+  it('score 0.8 earns no critic star', () => {
+    const k = serveCritic(0.8);
+    k.tick(1000);
+    expect(k.phase).toBe('ended');
+    expect(k.save.criticStars).toBe(0);
+  });
+});
