@@ -36,7 +36,7 @@ export function createRenderer(container: HTMLElement): Renderer {
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 60);
 
   // lights
-  const key = new THREE.DirectionalLight(0xffd9a8, 2.2);
+  const key = new THREE.DirectionalLight(0xffd9a8, 3.0);
   key.position.set(4, 9, 5);
   key.castShadow = !isMobile;
   key.shadow.mapSize.set(1024, 1024);
@@ -48,7 +48,9 @@ export function createRenderer(container: HTMLElement): Renderer {
   const hemi = new THREE.HemisphereLight(0xffe8cc, 0x2a1c14, 0.5);
   const point = new THREE.PointLight(0xffc27a, 6, 8, 2);
   point.position.set(0, 3, 0.8);
-  scene.add(key, key.target, fill, hemi, point);
+  const rim = new THREE.DirectionalLight(0xffb478, 1.4); // warm rim from behind: glossy edges read
+  rim.position.set(-1, 3, -6);
+  scene.add(key, key.target, fill, hemi, point, rim);
 
   // kitchen backdrop
   const kitchen = new THREE.Group();

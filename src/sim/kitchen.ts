@@ -65,7 +65,7 @@ export function donenessFromRatio(r: number, level: number): Pick<StepResult, 't
 /** Per-step transient state the sim keeps off the public OrderStep. */
 interface StepExtra { side0Ratio: number; warned: number /* 0 none,1 ready,2 over,3 burnt */ }
 
-export function createKitchen(opts: KitchenOptions = {}): Kitchen {
+export function createKitchen(opts: KitchenOptions = {}): Kitchen & { debugSpawnCritic(): void } {
   let storage: Storage | null = opts.storage ?? null;
   if (opts.storage === undefined) {
     try { storage = globalThis.localStorage ?? null; } catch { storage = null; }
@@ -285,7 +285,7 @@ export function createKitchen(opts: KitchenOptions = {}): Kitchen {
     try { storage?.setItem(SAVE_KEY, JSON.stringify(save)); } catch { /* storage unavailable */ }
   }
 
-  const kitchen: Kitchen = {
+  const kitchen: Kitchen & { debugSpawnCritic(): void } = {
     events, save,
     get phase() { return phase; },
     get elapsed() { return elapsed; },
@@ -423,12 +423,13 @@ export function createKitchen(opts: KitchenOptions = {}): Kitchen {
       if (!def || save.helpers.some((h) => h.id === helperId) || save.money < def.hireCost) return false;
       setMoney(-def.hireCost);
       save.helpers.push({ ...def });
+      persist();
       return true;
     },
 
     assignHelper(helperId, station) {
       const h = save.helpers.find((x) => x.id === helperId);
-      if (h) { h.station = station; h.busyWith = undefined; }
+      if (h) { h.station = station; h.busyWith = undefined; persist(); }
     },
 
     buyRecipe(recipeId) {
@@ -436,6 +437,7 @@ export function createKitchen(opts: KitchenOptions = {}): Kitchen {
       if (!r || save.unlockedRecipes.includes(recipeId) || save.money < r.unlockCost) return false;
       setMoney(-r.unlockCost);
       save.unlockedRecipes.push(recipeId);
+      persist();
       return true;
     },
 
@@ -444,6 +446,7 @@ export function createKitchen(opts: KitchenOptions = {}): Kitchen {
       if (!sp || save.ownedSpices.includes(spiceId) || save.money < sp.cost) return false;
       setMoney(-sp.cost);
       save.ownedSpices.push(spiceId);
+      persist();
       return true;
     },
 
@@ -453,10 +456,13 @@ export function createKitchen(opts: KitchenOptions = {}): Kitchen {
       if (level >= 3 || cost === undefined || minigameScore < 0.6 || save.money < cost) return false;
       setMoney(-cost);
       save.equipmentLevel[kind] = level + 1;
+      persist();
       return true;
     },
 
     persist,
+    /** Test-only: spawn the critic now (shift must be running). */
+    debugSpawnCritic() { if (phase === 'running' && customers.length < RESTAURANT.seats) { criticPending = false; spawnCustomer(true); } },
   };
   return kitchen;
 }
